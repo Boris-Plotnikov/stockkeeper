@@ -4,7 +4,7 @@ Small companies often track their warehouse in a spreadsheet: nobody knows who t
 
 ![CI](https://github.com/Boris-Plotnikov/stockkeeper/actions/workflows/ci.yml/badge.svg)
 
-## Try it in 2 minutes
+## Quick start
 
 ```bash
 cmake -S . -B build && cmake --build build
@@ -69,7 +69,7 @@ ctest --test-dir build --output-on-failure
 
 ## Run it in the browser
 
-**Live: https://boris-plotnikov.click/stockkeeper/** — type commands in a real terminal and watch the stock table and the journal change.
+**Live: https://boris-plotnikov.click/stockkeeper/** - type commands in a real terminal and watch the stock table and the journal change.
 
 The page runs this C++ code, not a JavaScript copy: the library is compiled to WebAssembly with Emscripten. `wasm/bindings.cpp` wraps Inventory, Storage and CommandLine in a small `Session` class; `web/` is a React page that calls it. The button **`</> Under the hood`** shows the C++ code behind every command, cut from the source at build time (`web/codetour.json`, `web/scripts/codetour.mjs`).
 
@@ -85,3 +85,5 @@ C++17 · STL · CMake · GoogleTest · GitHub Actions · Emscripten / WebAssembl
 ## About
 
 Built by Boris Plotnikov as a portfolio project. The company and the data are fictional.
+
+AI tools were used to review code and speed up routine work. The design, the business rules and the tests are my own, and I can explain every part of the code.

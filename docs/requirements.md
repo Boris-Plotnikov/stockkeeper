@@ -2,12 +2,12 @@
 
 ## Business goal
 
-A small office (30–80 people) keeps furniture, IT equipment and supplies in one storage room. Today the stock is tracked in a spreadsheet. Problems: items run out without warning, nobody knows who took what, stocktaking differences cannot be explained.
+A small office (30-80 people) keeps furniture, IT equipment and supplies in one storage room. Today the stock is tracked in a spreadsheet. Problems: items run out without warning, nobody knows who took what, stocktaking differences cannot be explained.
 
 ## Users
 
-- **Office manager** — receives deliveries, hands out items, orders new stock.
-- **Finance** — needs the value of the warehouse at month end.
+- **Office manager** - receives deliveries, hands out items, orders new stock.
+- **Finance** - needs the value of the warehouse at month end.
 
 ## User stories
 

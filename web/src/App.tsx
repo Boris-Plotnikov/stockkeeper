@@ -4,7 +4,7 @@ import { Flow, flowForRequest, logRequest, openTour } from "./codetour/store";
 import { ItemRow, MovementRow, Session, startSession } from "./engine";
 
 const LABELS: Labels = {
-  subtitle: "Real C++ code of this program, taken from the repository at build time.",
+  subtitle: "C++ source code of this program, extracted from the repository at build time.",
   requests: "Live commands",
   emptyRequests: "Type a command in the terminal: each one appears here with the C++ code that handled it.",
 };
@@ -253,10 +253,10 @@ export default function App() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8">
-        <h1 className="text-3xl font-bold tracking-tight">A command-line warehouse tool, running in your browser</h1>
+        <h1 className="text-3xl font-bold tracking-tight">StockKeeper in the browser</h1>
         <p className="mt-2 max-w-3xl text-slate-600">
-          This is the real C++ program — the same library as the terminal version and its 22 unit tests — compiled to WebAssembly with Emscripten.
-          Nothing is sent to a server: every command below runs as C++ inside this page.
+          A command-line warehouse tool in C++17. The library used by the terminal version and its 22 unit tests is compiled to WebAssembly with Emscripten.
+          Commands run in the browser; no server is involved.
         </p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
           <span className="rounded-full bg-emerald-100 px-2.5 py-1 font-semibold text-emerald-800">{session ? `● C++ module loaded in ${loadMs} ms` : failed ? "Could not load the module" : "Loading the C++ module…"}</span>
@@ -303,7 +303,7 @@ export default function App() {
 
         <section className="mt-12">
           <h2 className="text-xl font-bold">How it is built</h2>
-          <p className="mt-1 text-sm text-slate-600">Every command is a chain of real code: command parser → business logic → journal → unit test. Open any of them.</p>
+          <p className="mt-1 text-sm text-slate-600">Code for each command: parser, business logic, journal and unit test.</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {(flows ?? []).map((f) => (
               <button key={f.id} onClick={() => openTour(f.id)} className="card p-4 text-left transition hover:border-brand/40">
@@ -316,11 +316,11 @@ export default function App() {
         </section>
 
         <section className="mt-12">
-          <h2 className="text-xl font-bold">One C++ library, three ways to run it</h2>
+          <h2 className="text-xl font-bold">Build targets</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {[
               ["Terminal", "main.cpp reads lines from std::cin and prints what CommandLine::execute returns."],
-              ["Unit tests", "GoogleTest calls the same execute() and checks the returned text — 22 tests in CI on Linux and Windows."],
+              ["Unit tests", "GoogleTest calls the same execute() and checks the returned text - 22 tests in CI on Linux and Windows."],
               ["This page", "Emscripten compiles the library to WebAssembly; wasm/bindings.cpp exposes a small Session class to JavaScript."],
             ].map(([title, text]) => (
               <div key={title} className="card p-4">
