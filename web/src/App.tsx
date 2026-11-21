@@ -332,7 +332,7 @@ export default function App() {
         </section>
 
         <footer className="mt-12 border-t border-slate-200 pt-6 text-sm text-muted">
-          StockKeeper · a portfolio project by Boris Plotnikov · <a href="../" className="hover:text-ink">boris-plotnikov.click</a>
+          StockKeeper · a portfolio project by Boris Plotnikov · web page by an external frontend developer to my specification · <a href="../" className="hover:text-ink">boris-plotnikov.click</a>
         </footer>
       </main>
       <UnderTheHood screen="/" labels={LABELS} />
