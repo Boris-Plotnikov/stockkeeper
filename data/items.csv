@@ -1,0 +1,8 @@
+sku,name,unit,quantity,min_stock,price_cents
+CH-100,Office chair,pcs,14,5,14990
+DS-200,Standing desk,pcs,3,4,38900
+LP-310,Laptop 14 inch,pcs,7,3,104900
+MN-220,Monitor 27 inch,pcs,9,4,27900
+PA-010,Printer paper A4,box,2,10,2450
+TN-050,Toner black,pcs,6,4,6890
+HD-120,USB-C hub,pcs,25,10,3990

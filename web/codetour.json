@@ -1,0 +1,137 @@
+{
+  "root": "..",
+  "flows": [
+    {
+      "id": "issue",
+      "title": "Issue goods",
+      "summary": "Taking goods out of the warehouse. The item refuses to go below zero before anything is written, so a failed command leaves both the stock and the journal untouched.",
+      "routes": ["/"],
+      "endpoints": ["RUN issue"],
+      "steps": [
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::cmd_issue", "note": "Parses the arguments and warns when the item drops below its minimum." },
+        { "layer": "Logic", "file": "src/inventory.cpp", "symbol": "method:Inventory::issue", "note": "" },
+        { "layer": "Logic", "file": "src/item.cpp", "symbol": "method:Item::remove", "note": "The only place where the quantity goes down." },
+        { "layer": "Logic", "file": "src/inventory.cpp", "symbol": "method:Inventory::record", "note": "Appends to the journal with the balance after the movement." },
+        { "layer": "Test", "file": "tests/inventory_test.cpp", "symbol": "test:InventoryTest.FailedIssueDoesNotWriteJournal", "note": "" },
+        { "layer": "Test", "file": "tests/item_test.cpp", "symbol": "test:ItemTest.CannotRemoveMoreThanOnStock", "note": "" }
+      ]
+    },
+    {
+      "id": "receive",
+      "title": "Receive goods",
+      "summary": "A delivery adds to the stock and writes a RECEIVE line to the journal.",
+      "routes": ["/"],
+      "endpoints": ["RUN receive"],
+      "steps": [
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::cmd_receive", "note": "" },
+        { "layer": "Logic", "file": "src/inventory.cpp", "symbol": "method:Inventory::receive", "note": "" },
+        { "layer": "Logic", "file": "src/item.cpp", "symbol": "method:Item::add", "note": "" },
+        { "layer": "Test", "file": "tests/inventory_test.cpp", "symbol": "test:InventoryTest.ReceiveAndIssueWriteJournal", "note": "" }
+      ]
+    },
+    {
+      "id": "count",
+      "title": "Stocktaking",
+      "summary": "The counted quantity replaces the recorded one, and the difference becomes a new ADJUST movement. History is never edited.",
+      "routes": ["/"],
+      "endpoints": ["RUN count"],
+      "steps": [
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::cmd_count", "note": "" },
+        { "layer": "Logic", "file": "src/inventory.cpp", "symbol": "method:Inventory::adjust", "note": "Works in both directions: more or less than recorded." },
+        { "layer": "Test", "file": "tests/inventory_test.cpp", "symbol": "test:InventoryTest.AdjustSetsCountedQuantityInBothDirections", "note": "" }
+      ]
+    },
+    {
+      "id": "reorder",
+      "title": "Stock list and reorder list",
+      "summary": "Items below their minimum stock, with the quantity to order.",
+      "routes": ["/"],
+      "endpoints": ["RUN low", "RUN stock"],
+      "steps": [
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::cmd_low", "note": "" },
+        { "layer": "Logic", "file": "src/inventory.cpp", "symbol": "method:Inventory::low_stock", "note": "" },
+        { "layer": "Header", "file": "include/stockkeeper/item.h", "symbol": "type:Item", "note": "Small getters are defined in the header; is_below_minimum is one line." },
+        { "layer": "Test", "file": "tests/inventory_test.cpp", "symbol": "test:InventoryTest.LowStockListsOnlyItemsBelowMinimum", "note": "" }
+      ]
+    },
+    {
+      "id": "money",
+      "title": "Warehouse value in cents",
+      "summary": "Prices are stored as whole cents in long long, never as double, so sums are exact.",
+      "routes": ["/"],
+      "endpoints": ["RUN report"],
+      "steps": [
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::cmd_report", "note": "" },
+        { "layer": "Logic", "file": "src/inventory.cpp", "symbol": "method:Inventory::total_value_cents", "note": "" },
+        { "layer": "Logic", "file": "src/money.cpp", "symbol": "method:parse_cents", "note": "“12.5” becomes 1250 without floating point." },
+        { "layer": "Logic", "file": "src/money.cpp", "symbol": "method:format", "note": "" },
+        { "layer": "Test", "file": "tests/item_test.cpp", "symbol": "test:MoneyTest.ParsesAndFormatsCents", "note": "" }
+      ]
+    },
+    {
+      "id": "history",
+      "title": "Journal",
+      "summary": "An append-only list of movements; it can be filtered by item.",
+      "routes": ["/"],
+      "endpoints": ["RUN history"],
+      "steps": [
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::cmd_history", "note": "" },
+        { "layer": "Logic", "file": "src/inventory.cpp", "symbol": "method:Inventory::history", "note": "" },
+        { "layer": "Header", "file": "include/stockkeeper/inventory.h", "symbol": "type:Movement", "note": "" },
+        { "layer": "Test", "file": "tests/inventory_test.cpp", "symbol": "test:InventoryTest.HistoryCanBeFilteredBySku", "note": "" }
+      ]
+    },
+    {
+      "id": "storage",
+      "title": "CSV files",
+      "summary": "save writes two CSV files, load reads them back and replays the journal. A broken line reports the file and the line number.",
+      "routes": ["/"],
+      "endpoints": ["RUN save", "RUN load"],
+      "steps": [
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::cmd_save", "note": "" },
+        { "layer": "Storage", "file": "src/storage.cpp", "symbol": "method:Storage::save", "note": "" },
+        { "layer": "Storage", "file": "src/storage.cpp", "symbol": "method:Storage::load", "note": "" },
+        { "layer": "Test", "file": "tests/storage_test.cpp", "symbol": "test:StorageTest.SaveAndLoadRoundTrip", "note": "" },
+        { "layer": "Test", "file": "tests/storage_test.cpp", "symbol": "test:StorageTest.BrokenLineReportsFileAndLineNumber", "note": "" }
+      ]
+    },
+    {
+      "id": "parsing",
+      "title": "Command parsing and errors",
+      "summary": "One entry point turns a line of text into a command. Quoted parts stay together; any error becomes a message and the program keeps running.",
+      "routes": ["/"],
+      "endpoints": ["RUN help", "RUN add", "RUN quit", "RUN exit"],
+      "steps": [
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::execute", "note": "Returns text instead of printing it, so every command is unit-tested." },
+        { "layer": "Logic", "file": "src/text.cpp", "symbol": "method:tokenize", "note": "" },
+        { "layer": "Command", "file": "src/command_line.cpp", "symbol": "method:CommandLine::cmd_add", "note": "" },
+        { "layer": "Test", "file": "tests/command_line_test.cpp", "symbol": "test:TextTest.TokenizeKeepsQuotedParts", "note": "" },
+        { "layer": "Test", "file": "tests/command_line_test.cpp", "symbol": "test:CommandLineTest.ErrorsDoNotStopTheProgram", "note": "" }
+      ]
+    },
+    {
+      "id": "design",
+      "title": "Classes",
+      "summary": "Item keeps its own rules, Inventory owns the items and the journal in standard containers. No raw pointers and no manual memory management.",
+      "routes": ["/"],
+      "endpoints": [],
+      "steps": [
+        { "layer": "Header", "file": "include/stockkeeper/inventory.h", "symbol": "type:Inventory", "note": "" },
+        { "layer": "Header", "file": "include/stockkeeper/command_line.h", "symbol": "type:CommandLine", "note": "" },
+        { "layer": "Logic", "file": "src/main.cpp", "symbol": "method:main", "note": "The terminal version: the same CommandLine, reading from std::cin." }
+      ]
+    },
+    {
+      "id": "wasm",
+      "title": "C++ in the browser",
+      "summary": "The same library the terminal program uses is compiled with Emscripten to WebAssembly. A thin binding class exposes it to the page; the CSV files live in the browser memory.",
+      "routes": ["/"],
+      "endpoints": [],
+      "steps": [
+        { "layer": "WebAssembly", "file": "wasm/bindings.cpp", "symbol": "file", "note": "A Session class wraps Inventory, Storage and CommandLine; EMSCRIPTEN_BINDINGS exposes it to JavaScript." },
+        { "layer": "Build", "file": "CMakeLists.txt", "symbol": "file", "note": "One CMake file builds the terminal program, the tests and the WebAssembly module." },
+        { "layer": "Build", "file": "web/scripts/build-wasm.sh", "symbol": "file", "note": "" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+id,date,sku,type,quantity,balance_after,note
+1,2026-11-03,CH-100,RECEIVE,20,20,Delivery from Bürowelt GmbH, invoice 2026-311
+2,2026-11-03,DS-200,RECEIVE,6,6,Delivery from Bürowelt GmbH, invoice 2026-311
+3,2026-11-04,LP-310,RECEIVE,10,10,IT order 4471
+4,2026-11-04,MN-220,RECEIVE,12,12,IT order 4471
+5,2026-11-05,PA-010,RECEIVE,12,12,Monthly paper order
+6,2026-11-05,TN-050,RECEIVE,8,8,Monthly paper order
+7,2026-11-05,HD-120,RECEIVE,30,30,IT order 4472
+8,2026-11-07,CH-100,ISSUE,6,14,New team room 2.14
+9,2026-11-07,DS-200,ISSUE,3,3,New team room 2.14
+10,2026-11-10,LP-310,ISSUE,3,7,Onboarding of 3 new employees
+11,2026-11-10,MN-220,ISSUE,3,9,Onboarding of 3 new employees
+12,2026-11-12,PA-010,ISSUE,10,2,Floor 1 and 2 printers
+13,2026-11-12,TN-050,ISSUE,2,6,Floor 1 printer
+14,2026-11-14,HD-120,ISSUE,5,25,Meeting rooms
